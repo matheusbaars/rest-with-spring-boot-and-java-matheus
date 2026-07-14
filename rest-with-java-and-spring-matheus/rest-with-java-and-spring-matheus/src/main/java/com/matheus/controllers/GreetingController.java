@@ -13,7 +13,10 @@ public class GreetingController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping("/greeting")
+    // http://localhost:8080/greeting?name=Matheus
+    // http://localhost:8080/math/sum/3/5
+
+    @RequestMapping("/greeting") // aplica-se apenas ao método
     public Greeting greeting(
             @RequestParam(value = "name", defaultValue = "Word")
             String name) {
