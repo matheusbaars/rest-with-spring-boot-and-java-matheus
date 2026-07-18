@@ -1,14 +1,17 @@
 package com.matheus.controllers;
 
 import com.matheus.exception.UnsupportedMathOperationException;
-import jakarta.websocket.server.PathParam;
+import com.matheus.math.SimpleMath;
+import com.matheus.request.converters.NumberConverter;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/math")
-public class MathControllers {
+public class MathController {
+
+    private SimpleMath math = new SimpleMath();
 
     // http://localhost:8080/math/sum/3/5
     @RequestMapping("/sum/{numberOne}/{numberTwo}")
@@ -16,8 +19,8 @@ public class MathControllers {
             @PathVariable("numberOne") String numberOne,
             @PathVariable("numberTwo") String numberTwo
     ) throws Exception {
-        if(!isNumeric(numberOne) || !isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
-        return convertToDouble(numberOne) + convertToDouble(numberTwo);
+        if(!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
+        return math.sum(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
     }
 
     // http://localhost:8080/math/subtraction/3/5
@@ -26,8 +29,8 @@ public class MathControllers {
             @PathVariable("numberOne") String numberOne,
             @PathVariable("numberTwo") String numberTwo
     ) throws Exception {
-        if(!isNumeric(numberOne) || !isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
-        return convertToDouble(numberOne) - convertToDouble(numberTwo);
+        if(!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
+        return math.subtraction(NumberConverter.convertToDouble(numberOne),NumberConverter.convertToDouble(numberTwo));
     }
 
     // http://localhost:8080/math/multiplication/3/5
@@ -36,8 +39,8 @@ public class MathControllers {
             @PathVariable("numberOne") String numberOne,
             @PathVariable("numberTwo") String numberTwo
     ) throws Exception {
-        if(!isNumeric(numberOne) || !isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
-        return convertToDouble(numberOne) * convertToDouble(numberTwo);
+        if(!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
+        return math.multiplication(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
     }
 
     // http://localhost:8080/math/division/3/5
@@ -46,8 +49,8 @@ public class MathControllers {
             @PathVariable("numberOne") String numberOne,
             @PathVariable("numberTwo") String numberTwo
     ) throws Exception {
-        if(!isNumeric(numberOne) || !isNumeric(numberTwo) || numberTwo.equals("0")) throw new UnsupportedMathOperationException("Impossible division");
-        return convertToDouble(numberOne) / convertToDouble(numberTwo);
+        if(!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo) || numberTwo.equals("0")) throw new UnsupportedMathOperationException("Impossible division");
+        return math.division(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
     }
 
     // http://localhost:8080/math/mean/3/5
@@ -56,8 +59,8 @@ public class MathControllers {
             @PathVariable("numberOne") String numberOne,
             @PathVariable("numberTwo") String numberTwo
     ) throws Exception {
-        if(!isNumeric(numberOne) || !isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
-        return (convertToDouble(numberOne) + convertToDouble(numberTwo)) / 2;
+        if(!NumberConverter.isNumeric(numberOne) || !NumberConverter.isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please send a numeric value");
+        return math.mean(NumberConverter.convertToDouble(numberOne), NumberConverter.convertToDouble(numberTwo));
     }
 
     // http://localhost:8080/math/squareRoot/81
@@ -65,19 +68,7 @@ public class MathControllers {
     public double squareRoot(
             @PathVariable("number") String number
     ) throws Exception {
-        if(!isNumeric(number)) throw new UnsupportedMathOperationException("Please send a numeric value");
-        return Math.sqrt(convertToDouble(number));
-    }
-
-    private Double convertToDouble(String strNumber) {
-        if(strNumber == null || strNumber.isEmpty()) throw new UnsupportedMathOperationException("Please send a numeric value");
-        String number = strNumber.replace(",", ".");
-        return Double.parseDouble(number);
-    }
-
-    private boolean isNumeric(String strNumber) {
-        if(strNumber == null || strNumber.isEmpty()) return false;
-        String number = strNumber.replace(",", ".");
-        return number.matches("[-+]?[0-9]*\\.?[0-9]+");
+        if(!NumberConverter.isNumeric(number)) throw new UnsupportedMathOperationException("Please send a numeric value");
+        return math.squareRoot(NumberConverter.convertToDouble(number));
     }
 }
